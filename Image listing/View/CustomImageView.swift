@@ -13,55 +13,61 @@ let imageCache = NSCache<NSString, UIImage>()
 // this class is used to create the thumbnails for the table cells
 class CustomImageView: UIImageView {
     
-    var imageUrlString: String?
-    
-    func loadImageUsingUrlString(fullImageDownloadUrlString: String, placeHolder: UIImage) {
-//         image = nil
+       var thumbUrlString: String?
         
-        guard let thumbDownloadUrl = APIService.shareInstance.getThumbDownloadUrl(download_url: fullImageDownloadUrlString) else {return}
-        imageUrlString = thumbDownloadUrl.absoluteString
-        
-        if let imageFromCache = imageCache.object(forKey: imageUrlString! as NSString) {
-            image = imageFromCache    // .addFilter(filter: FilterType.Noir)
-            return
-        }
-        
-        // try DB
-        if let results = DataBaseHelper.shareInstance.fetchImage(download_url: imageUrlString!){
-            if results.count > 0 {
-                let dbImage = UIImage(data: results[0].data!)
-                image = dbImage
-                imageCache.setObject(dbImage!, forKey: imageUrlString! as NSString)
-                return
-            }
-        }
-        
-        URLSession.shared.dataTask(with: thumbDownloadUrl, completionHandler: { (data, respones, error) in
+        func loadImageUsingUrlString(fullImageDownloadUrlString: String, placeHolder: UIImage) {
             
-            if error != nil {
-                print(error ?? "")
-                self.image = placeHolder
+            guard let thumbDownloadUrl = APIService.shareInstance.getThumbDownloadUrl(download_url: fullImageDownloadUrlString) else {
+                image = placeHolder
+                return}
+            thumbUrlString = thumbDownloadUrl.absoluteString
+            
+            if let imageFromCache = imageCache.object(forKey: thumbUrlString! as NSString) {
+                image = imageFromCache    // .addFilter(filter: FilterType.Noir)
                 return
+            } else {
+                image = placeHolder
             }
             
-            DispatchQueue.main.async {
-                guard let imageFromNetwork = UIImage(data: data!) else { return }
-                
-                if self.imageUrlString == thumbDownloadUrl.absoluteString {
-                    self.image = imageFromNetwork.addFilter(filter: FilterType.Mono)
-                    
-                    imageCache.setObject(imageFromNetwork, forKey: self.imageUrlString! as NSString)
-                    
-                    // save to CoreData
-                    if let imageData = imageFromNetwork.jpegData(compressionQuality: 0.8) {
-                        DataBaseHelper.shareInstance.saveImage(data: imageData, download_url: thumbDownloadUrl.absoluteString)
-                    }
+            // try DB
+            if let results = DataBaseHelper.shareInstance.fetchImage(download_url: thumbUrlString!){
+                if results.count > 0 {
+                    let dbImage = UIImage(data: results[0].data!)
+                    image = dbImage
+                    imageCache.setObject(dbImage!, forKey: thumbUrlString! as NSString)
+                    return
                 }
             }
             
-        }).resume()
+            URLSession.shared.dataTask(with: thumbDownloadUrl, completionHandler: { (data, respones, error) in
+                
+                if error != nil {
+                    print(error ?? "")
+                    DispatchQueue.main.async {
+                        self.image = placeHolder
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    guard let imageFromNetwork = UIImage(data: data!) else { return }
+                    
+                    if self.thumbUrlString == thumbDownloadUrl.absoluteString {
+                        // apply a filter only on newly arrived images
+                        self.image = imageFromNetwork.addFilter(filter: FilterType.Mono)
+                        
+                        imageCache.setObject(imageFromNetwork, forKey: self.thumbUrlString! as NSString)
+                        
+                        // save to CoreData
+                        if let imageData = imageFromNetwork.jpegData(compressionQuality: 0.8) {
+                            DataBaseHelper.shareInstance.saveImage(data: imageData, download_url: thumbDownloadUrl.absoluteString)
+                        }
+                    }
+                }
+                
+            }).resume()
+        }
     }
-}
 
 enum FilterType : String {
     case Chrome = "CIPhotoEffectChrome"
