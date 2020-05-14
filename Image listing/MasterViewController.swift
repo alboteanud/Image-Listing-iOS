@@ -13,34 +13,53 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
-
+    
+     @objc
+        func updateTableContent(_ sender: Any) {
+    //        do {
+    //            try self.fetchedhResultController.performFetch()
+    //            print("COUNT FETCHED FIRST: \(String(describing: self.fetchedhResultController.sections?[0].numberOfObjects))")
+    //        } catch let error  {
+    //            print("ERROR: \(error)")
+    //        }
+            let service = APIService()
+            service.getDataWith { (result) in
+                switch result {
+                case .Success(let data):
+                      _ = data.map{ self.insertNewObject(dictionary: $0) }
+    //                self.clearData()
+                case .Error(let message):
+                    print("error", message)
+                }
+            }
+        }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationItem.leftBarButtonItem = editButtonItem
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(updateTableContent(_:)))
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
+//        updateTableContent()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
-
+    
     @objc
-    func insertNewObject(_ sender: Any) {
+    func insertNewObject(dictionary: [String : AnyObject]) {
         let context = self.fetchedResultsController.managedObjectContext
-        let newEvent = Event(context: context)
-             
-        // If appropriate, configure the new managed object.
-        newEvent.timestamp = Date()
-
+        let newImageDetails = ImageDetails(context: context)
+        let author = dictionary["author"] as! String
+        newImageDetails.author = author
+        
         // Save the context.
         do {
             try context.save()
@@ -80,8 +99,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let event = fetchedResultsController.object(at: indexPath)
-        configureCell(cell, withEvent: event)
+        let imageDetails = fetchedResultsController.object(at: indexPath)
+        configureCell(cell, withImageDetails: imageDetails)
         return cell
     }
 
@@ -105,46 +124,46 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             }
         }
     }
-
-    func configureCell(_ cell: UITableViewCell, withEvent event: Event) {
-        cell.textLabel!.text = event.timestamp!.description
-    }
+    
+    func configureCell(_ cell: UITableViewCell, withImageDetails imageDetails: ImageDetails) {
+        cell.textLabel!.text = imageDetails.author!.description
+       }
 
     // MARK: - Fetched results controller
-
-    var fetchedResultsController: NSFetchedResultsController<Event> {
-        if _fetchedResultsController != nil {
-            return _fetchedResultsController!
-        }
-        
-        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
-        
-        // Set the batch size to a suitable number.
-        fetchRequest.fetchBatchSize = 20
-        
-        // Edit the sort key as appropriate.
-        let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
-        
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        // Edit the section name key path and cache name if appropriate.
-        // nil for section name key path means "no sections".
-        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: "Master")
-        aFetchedResultsController.delegate = self
-        _fetchedResultsController = aFetchedResultsController
-        
-        do {
-            try _fetchedResultsController!.performFetch()
-        } catch {
-             // Replace this implementation with code to handle the error appropriately.
-             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             let nserror = error as NSError
-             fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
-        
-        return _fetchedResultsController!
-    }    
-    var _fetchedResultsController: NSFetchedResultsController<Event>? = nil
+    
+    var fetchedResultsController: NSFetchedResultsController<ImageDetails> {
+           if _fetchedResultsController2 != nil {
+               return _fetchedResultsController2!
+           }
+           
+           let fetchRequest: NSFetchRequest<ImageDetails> = ImageDetails.fetchRequest()
+           
+           // Set the batch size to a suitable number.
+           fetchRequest.fetchBatchSize = 20
+           
+           // Edit the sort key as appropriate.
+           let sortDescriptor = NSSortDescriptor(key: "author", ascending: false)
+           
+           fetchRequest.sortDescriptors = [sortDescriptor]
+           
+           // Edit the section name key path and cache name if appropriate.
+           // nil for section name key path means "no sections".
+           let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: "Master")
+           aFetchedResultsController.delegate = self
+           _fetchedResultsController2 = aFetchedResultsController
+           
+           do {
+               try _fetchedResultsController2!.performFetch()
+           } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+           }
+           
+           return _fetchedResultsController2!
+       }
+       var _fetchedResultsController2: NSFetchedResultsController<ImageDetails>? = nil
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
@@ -168,9 +187,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Event)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withImageDetails: anObject as! ImageDetails)
             case .move:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Event)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withImageDetails: anObject as! ImageDetails)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
             default:
                 return
@@ -189,6 +208,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
          tableView.reloadData()
      }
      */
+   
 
 }
 

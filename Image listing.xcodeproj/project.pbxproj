@@ -16,6 +16,7 @@
 		A42FB07E246C6E0A003F1CC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A42FB07D246C6E0A003F1CC3 /* Assets.xcassets */; };
 		A42FB081246C6E0A003F1CC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A42FB07F246C6E0A003F1CC3 /* LaunchScreen.storyboard */; };
 		A42FB08C246C6E0A003F1CC3 /* Image_listingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42FB08B246C6E0A003F1CC3 /* Image_listingTests.swift */; };
+		A42FB097246C7181003F1CC3 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42FB096246C7181003F1CC3 /* APIService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		A42FB087246C6E0A003F1CC3 /* Image listingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Image listingTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A42FB08B246C6E0A003F1CC3 /* Image_listingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_listingTests.swift; sourceTree = "<group>"; };
 		A42FB08D246C6E0A003F1CC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A42FB096246C7181003F1CC3 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 		A42FB06E246C6E09003F1CC3 /* Image listing */ = {
 			isa = PBXGroup;
 			children = (
+				A42FB096246C7181003F1CC3 /* APIService.swift */,
 				A42FB06F246C6E09003F1CC3 /* AppDelegate.swift */,
 				A42FB074246C6E09003F1CC3 /* SceneDelegate.swift */,
 				A42FB076246C6E09003F1CC3 /* MasterViewController.swift */,
@@ -210,6 +213,7 @@
 				A42FB073246C6E09003F1CC3 /* Image_listing.xcdatamodeld in Sources */,
 				A42FB079246C6E09003F1CC3 /* DetailViewController.swift in Sources */,
 				A42FB070246C6E09003F1CC3 /* AppDelegate.swift in Sources */,
+				A42FB097246C7181003F1CC3 /* APIService.swift in Sources */,
 				A42FB075246C6E09003F1CC3 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
