@@ -11,14 +11,14 @@ import UIKit
 
 class APIService: NSObject {
     
-    var pageNumber = 1
-    lazy var endPoint: String = {
-        return "https://picsum.photos/v2/list?page=\(self.pageNumber)&limit=1"
-    }()
+    static let shareInstance = APIService()
+    
+    func getEndpointUrl(pageNumber: Int) -> String {
+        return "https://picsum.photos/v2/list?page=\(String(pageNumber))&limit=10"
+    }
 
     func getDataWith(pageNumber: Int, completion: @escaping (Result<[[String: AnyObject]]>) -> Void) {
-        self.pageNumber = pageNumber
-        let urlString = endPoint
+        let urlString = getEndpointUrl(pageNumber: pageNumber)
         
         guard let url = URL(string: urlString) else { return completion(.Error("Invalid URL, we can't update your feed")) }
 
@@ -38,6 +38,22 @@ class APIService: NSObject {
             }
             }.resume()
     }
+    
+    func getThumbDownloadUrl(download_url: String) -> URL? {
+        guard let url = URL(string: download_url) else { return nil}
+        //        print ("paths", url.pathComponents)
+        
+        if url.pathComponents.count > 2 {
+            let photoId = url.pathComponents[2]
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+            components.path = "/id/\(photoId)/50/50.jpg"
+            //            print(components.url!)
+            // expected result: "https://i.picsum.photos/id/1006/50/50.jpg"
+            return components.url!
+        }
+        return nil
+    }
+    
 }
 
 enum Result<T> {

@@ -20,6 +20,7 @@
 		A42FB099246D1C8B003F1CC3 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42FB098246D1C8B003F1CC3 /* TableViewCell.swift */; };
 		A42FB09D246D2161003F1CC3 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42FB09C246D2161003F1CC3 /* CustomImageView.swift */; };
 		A42FB09F246D21F4003F1CC3 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = A42FB09E246D21F4003F1CC3 /* placeholder.png */; };
+		A42FB0A1246D6935003F1CC3 /* DataBaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A42FB0A0246D6935003F1CC3 /* DataBaseHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		A42FB098246D1C8B003F1CC3 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		A42FB09C246D2161003F1CC3 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		A42FB09E246D21F4003F1CC3 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder.png; path = Assets.xcassets/placeholder.png; sourceTree = "<group>"; };
+		A42FB0A0246D6935003F1CC3 /* DataBaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,17 +93,18 @@
 		A42FB06E246C6E09003F1CC3 /* Image listing */ = {
 			isa = PBXGroup;
 			children = (
-				A42FB096246C7181003F1CC3 /* APIService.swift */,
-				A42FB06F246C6E09003F1CC3 /* AppDelegate.swift */,
-				A42FB074246C6E09003F1CC3 /* SceneDelegate.swift */,
+				A42FB071246C6E09003F1CC3 /* Image_listing.xcdatamodeld */,
 				A42FB09B246D1CD0003F1CC3 /* View */,
 				A42FB09A246D1C9E003F1CC3 /* Controller */,
+				A42FB096246C7181003F1CC3 /* APIService.swift */,
+				A42FB0A0246D6935003F1CC3 /* DataBaseHelper.swift */,
+				A42FB06F246C6E09003F1CC3 /* AppDelegate.swift */,
+				A42FB074246C6E09003F1CC3 /* SceneDelegate.swift */,
 				A42FB07A246C6E09003F1CC3 /* Main.storyboard */,
 				A42FB07D246C6E0A003F1CC3 /* Assets.xcassets */,
 				A42FB09E246D21F4003F1CC3 /* placeholder.png */,
 				A42FB07F246C6E0A003F1CC3 /* LaunchScreen.storyboard */,
 				A42FB082246C6E0A003F1CC3 /* Info.plist */,
-				A42FB071246C6E09003F1CC3 /* Image_listing.xcdatamodeld */,
 			);
 			path = "Image listing";
 			sourceTree = "<group>";
@@ -236,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A42FB077246C6E09003F1CC3 /* MasterViewController.swift in Sources */,
+				A42FB0A1246D6935003F1CC3 /* DataBaseHelper.swift in Sources */,
 				A42FB073246C6E09003F1CC3 /* Image_listing.xcdatamodeld in Sources */,
 				A42FB079246C6E09003F1CC3 /* DetailViewController.swift in Sources */,
 				A42FB070246C6E09003F1CC3 /* AppDelegate.swift in Sources */,

@@ -37,9 +37,18 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YhN-29-p5e">
+                                <rect key="frame" x="20" y="88" width="374" height="250"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="250" id="4Yz-6f-fO5"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="YhN-29-p5e" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="0Da-FU-u1b"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="YhN-29-p5e" secondAttribute="trailing" constant="20" id="BKt-L1-K4J"/>
+                            <constraint firstItem="YhN-29-p5e" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="Chl-d4-MCx"/>
                             <constraint firstItem="0XM-y9-sOw" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" constant="20" symbolic="YES" id="Tsc-yG-G1q"/>
                             <constraint firstItem="0XM-y9-sOw" firstAttribute="centerY" secondItem="svH-Pt-448" secondAttribute="centerY" id="jWN-iV-94e"/>
                             <constraint firstAttribute="trailing" secondItem="0XM-y9-sOw" secondAttribute="trailing" constant="20" symbolic="YES" id="tHV-ZD-HQj"/>
@@ -50,11 +59,12 @@
                     <navigationItem key="navigationItem" title="Detail" id="mOI-FS-AaM"/>
                     <connections>
                         <outlet property="detailDescriptionLabel" destination="0XM-y9-sOw" id="deQ-Na-JPF"/>
+                        <outlet property="imageView" destination="YhN-29-p5e" id="vsa-Ih-rjB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="709" y="129"/>
+            <point key="canvasLocation" x="708.69565217391312" y="128.57142857142856"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
@@ -74,27 +84,28 @@
         <scene sceneID="smW-Zh-WAh">
             <objects>
                 <tableViewController title="Master" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="MasterViewController" customModule="Image_listing" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="68" id="WCw-Qf-5nD" customClass="TableViewCell" customModule="Image_listing" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="414" height="68"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="58" id="WCw-Qf-5nD" customClass="TableViewCell" customModule="Image_listing" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="414" height="58"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="68"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="58"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CvO-mC-BYU" customClass="CustomImageView" customModule="Image_listing" customModuleProvider="target">
-                                            <rect key="frame" x="20" y="4" width="60" height="60"/>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="CvO-mC-BYU" customClass="CustomImageView" customModule="Image_listing" customModuleProvider="target">
+                                            <rect key="frame" x="8" y="4" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="60" id="Eqc-4R-toL"/>
-                                                <constraint firstAttribute="width" constant="60" id="ogb-3C-Hbj"/>
+                                                <constraint firstAttribute="height" constant="50" id="Eqc-4R-toL"/>
+                                                <constraint firstAttribute="width" constant="50" id="ogb-3C-Hbj"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="muN-PL-Usf">
-                                            <rect key="frame" x="88" y="23.5" width="306" height="21"/>
+                                            <rect key="frame" x="352" y="18.5" width="42" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -102,8 +113,7 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="CvO-mC-BYU" firstAttribute="centerY" secondItem="37f-cq-3Eg" secondAttribute="centerY" id="6Xe-48-kbK"/>
-                                        <constraint firstItem="muN-PL-Usf" firstAttribute="leading" secondItem="CvO-mC-BYU" secondAttribute="trailing" constant="8" id="8X7-uL-3P0"/>
-                                        <constraint firstItem="CvO-mC-BYU" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="20" id="El7-95-HzH"/>
+                                        <constraint firstItem="CvO-mC-BYU" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="8" id="El7-95-HzH"/>
                                         <constraint firstItem="muN-PL-Usf" firstAttribute="centerY" secondItem="37f-cq-3Eg" secondAttribute="centerY" id="OuG-52-nvR"/>
                                         <constraint firstItem="muN-PL-Usf" firstAttribute="trailing" secondItem="37f-cq-3Eg" secondAttribute="trailingMargin" id="UZR-8N-cl8"/>
                                     </constraints>

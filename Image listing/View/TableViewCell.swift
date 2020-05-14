@@ -26,13 +26,15 @@ class TableViewCell: UITableViewCell {
     }
     
     func setTableCellWith(imageDetails: ImageDetails){
-         labelText.text = imageDetails.author
-    
-//        let placeholderImage = UIImage(named: "placeholder")!
+        labelText.text = imageDetails.author
         
-            if let download_url = imageDetails.download_url {
-                myImageView.loadImageUsingUrlString(urlString: download_url, placeHolder: UIImage(named: "placeholder")!)
-            }
+        let placeholderImage = UIImage(named: "placeholder")!
+        
+        if let download_url = imageDetails.download_url {
+            myImageView.loadImageUsingUrlString(fullImageDownloadUrlString: download_url, placeHolder: placeholderImage)
+        } else {
+            myImageView.image = placeholderImage
+        }
         
     }
 

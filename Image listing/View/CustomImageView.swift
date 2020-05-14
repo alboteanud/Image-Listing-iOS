@@ -10,48 +10,33 @@ import UIKit
 
 let imageCache = NSCache<NSString, UIImage>()
 
-// used to create the thumbnails for the table cells
+// this class is used to create the thumbnails for the table cells
 class CustomImageView: UIImageView {
     
     var imageUrlString: String?
     
-    func loadImageUsingUrlString(urlString: String, placeHolder: UIImage) {
-        imageUrlString = urlString
+    func loadImageUsingUrlString(fullImageDownloadUrlString: String, placeHolder: UIImage) {
+//         image = nil
         
-        guard var url = URL(string: urlString) else { return }
-//        print ("paths", url.pathComponents)
+        guard let thumbDownloadUrl = APIService.shareInstance.getThumbDownloadUrl(download_url: fullImageDownloadUrlString) else {return}
+        imageUrlString = thumbDownloadUrl.absoluteString
         
-        // modify url to get thumbnail photo
-        if url.pathComponents.count > 2 {
-            let photoId = url.pathComponents[2]
-            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            components.path = "/id/\(photoId)/60/60.jpg"
-//            print(components.url!)
-            // expected result: "https://i.picsum.photos/id/1006/60/60.jpg"
-            url = components.url!
-        }
-         
-        image = placeHolder
-        
-        if let imageFromCache = imageCache.object(forKey: urlString as NSString) {
-            self.image = imageFromCache
+        if let imageFromCache = imageCache.object(forKey: imageUrlString! as NSString) {
+            image = imageFromCache    // .addFilter(filter: FilterType.Noir)
             return
         }
         
         // try DB
-//        if let arr = DataBaseHelper.shareInstance.fetchImage(){
-//            if arr.count > 0 {
-//                let randomInt = Int.random(in: 0..<arr.count)
-//                let dbImage = UIImage(data: arr[randomInt].photo!)
-//                self.image = dbImage
-//                //                print("we have the photo in DB")
-//
-//                // todo add img to cach
-//                return
-//            }
-//        }
+        if let results = DataBaseHelper.shareInstance.fetchImage(download_url: imageUrlString!){
+            if results.count > 0 {
+                let dbImage = UIImage(data: results[0].data!)
+                image = dbImage
+                imageCache.setObject(dbImage!, forKey: imageUrlString! as NSString)
+                return
+            }
+        }
         
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, respones, error) in
+        URLSession.shared.dataTask(with: thumbDownloadUrl, completionHandler: { (data, respones, error) in
             
             if error != nil {
                 print(error ?? "")
@@ -60,22 +45,43 @@ class CustomImageView: UIImageView {
             }
             
             DispatchQueue.main.async {
-                guard let imageToCache = UIImage(data: data!) else { return }
+                guard let imageFromNetwork = UIImage(data: data!) else { return }
                 
-                if self.imageUrlString == urlString {
-                    self.image = imageToCache
+                if self.imageUrlString == thumbDownloadUrl.absoluteString {
+                    self.image = imageFromNetwork.addFilter(filter: FilterType.Mono)
+                    
+                    imageCache.setObject(imageFromNetwork, forKey: self.imageUrlString! as NSString)
                     
                     // save to CoreData
-                    if let imageData = imageToCache.jpegData(compressionQuality: 0.8) {
-//                        DataBaseHelper.shareInstance.saveImage(data: imageData)
+                    if let imageData = imageFromNetwork.jpegData(compressionQuality: 0.8) {
+                        DataBaseHelper.shareInstance.saveImage(data: imageData, download_url: thumbDownloadUrl.absoluteString)
                     }
                 }
-                
-                imageCache.setObject(imageToCache, forKey: urlString as NSString)
             }
             
         }).resume()
     }
-    
-    
+}
+
+enum FilterType : String {
+    case Chrome = "CIPhotoEffectChrome"
+    case Fade = "CIPhotoEffectFade"
+    case Instant = "CIPhotoEffectInstant"
+    case Mono = "CIPhotoEffectMono"
+    case Noir = "CIPhotoEffectNoir"
+    case Process = "CIPhotoEffectProcess"
+    case Tonal = "CIPhotoEffectTonal"
+    case Transfer =  "CIPhotoEffectTransfer"
+}
+
+extension UIImage {
+    func addFilter(filter : FilterType) -> UIImage {
+        let filter = CIFilter(name: filter.rawValue)
+        let ciInput = CIImage(image: self)
+        filter?.setValue(ciInput, forKey: "inputImage")
+        let ciOutput = filter?.outputImage
+        let ciContext = CIContext()
+        let cgImage = ciContext.createCGImage(ciOutput!, from: (ciOutput?.extent)!)
+        return UIImage(cgImage: cgImage!)
+    }
 }
