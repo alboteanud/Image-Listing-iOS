@@ -13,26 +13,21 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
+    var pageNumber = 0
     
-     @objc
-        func updateTableContent(_ sender: Any) {
-    //        do {
-    //            try self.fetchedhResultController.performFetch()
-    //            print("COUNT FETCHED FIRST: \(String(describing: self.fetchedhResultController.sections?[0].numberOfObjects))")
-    //        } catch let error  {
-    //            print("ERROR: \(error)")
-    //        }
-            let service = APIService()
-            service.getDataWith { (result) in
-                switch result {
-                case .Success(let data):
-                      _ = data.map{ self.insertNewObject(dictionary: $0) }
-    //                self.clearData()
-                case .Error(let message):
-                    print("error", message)
-                }
+    @objc
+    func updateTableContent(_ sender: Any) {
+        pageNumber += 1
+        let service = APIService()
+        service.getDataWith(pageNumber: pageNumber) { (result) in
+            switch result {
+            case .Success(let data):
+                _ = data.map{ self.insertNewObject(dictionary: $0) }
+            case .Error(let message):
+                print("error", message)
             }
         }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,10 +52,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     func insertNewObject(dictionary: [String : AnyObject]) {
         let context = self.fetchedResultsController.managedObjectContext
         let newImageDetails = ImageDetails(context: context)
-        let author = dictionary["author"] as! String
-        newImageDetails.author = author
+        if let author = dictionary["author"] as? String {
+            newImageDetails.author = author
+        }
+        if let download_url = dictionary["download_url"] as? String{
+            newImageDetails.download_url = download_url
+        }
         
-        // Save the context.
         do {
             try context.save()
         } catch {
@@ -126,14 +124,15 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     func configureCell(_ cell: UITableViewCell, withImageDetails imageDetails: ImageDetails) {
-        cell.textLabel!.text = imageDetails.author!.description
-       }
+        let tableCell = cell as! TableViewCell
+        tableCell.setTableCellWith(imageDetails: imageDetails)
+    }
 
     // MARK: - Fetched results controller
     
     var fetchedResultsController: NSFetchedResultsController<ImageDetails> {
-           if _fetchedResultsController2 != nil {
-               return _fetchedResultsController2!
+           if _fetchedResultsController != nil {
+               return _fetchedResultsController!
            }
            
            let fetchRequest: NSFetchRequest<ImageDetails> = ImageDetails.fetchRequest()
@@ -150,20 +149,22 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
            // nil for section name key path means "no sections".
            let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: "Master")
            aFetchedResultsController.delegate = self
-           _fetchedResultsController2 = aFetchedResultsController
+           _fetchedResultsController = aFetchedResultsController
            
            do {
-               try _fetchedResultsController2!.performFetch()
+               try _fetchedResultsController!.performFetch()
            } catch {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
            }
+        
+        self.managedObjectContext!.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
            
-           return _fetchedResultsController2!
+           return _fetchedResultsController!
        }
-       var _fetchedResultsController2: NSFetchedResultsController<ImageDetails>? = nil
+       var _fetchedResultsController: NSFetchedResultsController<ImageDetails>? = nil
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
@@ -187,7 +188,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withImageDetails: anObject as! ImageDetails)
+                if let cellForRow = tableView.cellForRow(at: indexPath!) {
+                    configureCell(cellForRow, withImageDetails: anObject as! ImageDetails)
+                }
             case .move:
                 configureCell(tableView.cellForRow(at: indexPath!)!, withImageDetails: anObject as! ImageDetails)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)

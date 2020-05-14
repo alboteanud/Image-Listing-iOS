@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="ImageDetails" representedClassName="ImageDetails" syncable="YES" codeGenerationType="class">
+    <entity name="ImageDetails" representedClassName="ImageDetails" isAbstract="YES" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="download_url" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="download_url"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
         <userInfo>
             <entry key="key" value="value"/>
         </userInfo>
