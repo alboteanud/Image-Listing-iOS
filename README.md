@@ -20,3 +20,24 @@ Instructions:
 
 
 Deadline: ​3 days
+
+
+Feedback from ENEA:
+
++
+
+- used only existing system frameworks
+
+- good use of storyboards for setting up the app's structure
+
+ 
+
+De imbunatati:
+
+- relying APIService and DataBaseHelper singletons throughout and using them from within an UI subclass (CustomImageView)
+
+- instantiating image from network data, applying filters to it and saving it on the main thread, instead of just rendering it on the main thread
+
+- improper persistence and networking error handling (one crashes the app, the other can't do much as it's within the UI layer)
+
+- unit tests: even though not mandatory a couple would've probably led to a better overall architecture
